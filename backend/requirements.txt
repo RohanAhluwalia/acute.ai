@@ -1,0 +1,7 @@
+fastapi==0.89.1
+uvicorn
+sqlalchemy
+databases
+pydantic==1.10.7
+psycopg2-binary
+requests
