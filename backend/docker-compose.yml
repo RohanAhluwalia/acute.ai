@@ -3,23 +3,28 @@ version: '3.8'
 services:
   db:
     image: postgres:13
-    environment:
-      POSTGRES_USER: your_user
-      POSTGRES_PASSWORD: your_password
-      POSTGRES_DB: your_db
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+      - ./postgresql_conf/pg_hba.conf:/etc/postgresql/pg_hba.conf
+      - ./postgresql_conf/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./postgresql_conf/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mydb
+    command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
 
   web:
     build: .
+    command: /bin/sh -c "sleep 10 && uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
     depends_on:
       - db
     environment:
-      DATABASE_URL: postgresql://your_user:your_password@db:5432/your_db
-    ports:
-      - "8000:8000"
+      DATABASE_URL: postgresql://myuser:mypassword@db/mydatabase
 
 volumes:
   postgres_data:

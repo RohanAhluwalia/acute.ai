@@ -1,17 +1,19 @@
 from fastapi import FastAPI
-from .config import settings
-from .models import Base, engine
-from .routers import patients, data
+from app.api.v1.endpoints import data, users, health, metriport
+from app.db.base import Base  # Ensure this is the correct Base import
+from app.db.session import engine
+from app.models import user
 
 app = FastAPI()
 
-# Create the database tables in the correct order
-Base.metadata.create_all(bind=engine)
-
-# Include routers
-app.include_router(patients.router, prefix="/patients", tags=["patients"])
-app.include_router(data.router, prefix="/data", tags=["data"])
-
 @app.get("/")
-def read_root():
-    return {"message": "Welcome to the Diabetes Management App"}
+async def read_root():
+    return {"message": "Welcome to the API"}
+
+app.include_router(data.router, prefix="/data")
+app.include_router(users.router, prefix="/users")
+app.include_router(health.router, prefix="/health")
+app.include_router(metriport.router, prefix="/metriport")
+
+# Ensure all tables are created
+user.Base.metadata.create_all(bind=engine)
