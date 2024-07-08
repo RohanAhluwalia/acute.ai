@@ -60,3 +60,8 @@ This application is designed for people with diabetes to link various sources of
     ```bash
     docker-compose up --build
     ```
+
+## Demo
+
+Short demo video: https://www.tella.tv/video/clwpybzz1084l09kzb2z24vxd/view
+
